@@ -1,4 +1,3 @@
-import "module-alias/register";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { PreviewApp } from "../models/previewApp";
