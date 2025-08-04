@@ -1,6 +1,5 @@
-import { deletePreviewApp, deployPreviewApp, getAllPreviewApps } from "@src/controllers/previewAppController";
-
 import { Router } from "express";
+import { deletePreviewApp, deployPreviewApp, getAllPreviewApps } from "src/controllers/previewAppController";
 
 const router = Router();
 

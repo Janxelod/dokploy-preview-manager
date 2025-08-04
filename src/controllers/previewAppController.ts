@@ -1,8 +1,8 @@
-import { AppDataSource } from "@src/database/appDataSource";
-import { PreviewApp } from "@src/models/previewApp";
-import previewAppservice from "@src/services/previewAppServices";
-import { CreateAPIResponseType } from "@src/types";
 import { Request, Response } from "express";
+import { AppDataSource } from "src/database/appDataSource";
+import { PreviewApp } from "src/models/previewApp";
+import previewAppServices from "src/services/previewAppServices";
+import { CreateAPIResponseType } from "src/types";
 
 export const getAllPreviewApps = async (_: Request, res: Response) => {
 	const previewAppRepo = AppDataSource.getRepository(PreviewApp);
@@ -20,13 +20,13 @@ export const deployPreviewApp = async (req: Request, res: Response) => {
 	});
 
 	if (existingPreviewApp) {
-		return await previewAppservice.deployApplication(existingPreviewApp.previewAppId, res);
+		return await previewAppServices.deployApplication(existingPreviewApp.previewAppId, res);
 	} else {
 		// create a new preview app on Dokploy
 		console.log("Creating new preview app on Dokploy");
 		// Create a unique name for the preview app
 		const previewAppName = `${sourceProjectName}-${serviceName}-${branchName}-preview`;
-		const createResponse: CreateAPIResponseType | null = await previewAppservice.createPreviewApp(
+		const createResponse: CreateAPIResponseType | null = await previewAppServices.createPreviewApp(
 			previewAppName,
 			previewAppName,
 			projectId,
@@ -35,7 +35,7 @@ export const deployPreviewApp = async (req: Request, res: Response) => {
 		if (createResponse) {
 			// Set up the Docker provider for the preview app
 			const dockerImage = `${process.env.DOCKER_REGISTRY_URL}/${sourceProjectName}/${serviceName}/${branchName}:latest`;
-			const dockerSetupResponse = await previewAppservice.setUpDockerProvider(
+			const dockerSetupResponse = await previewAppServices.setUpDockerProvider(
 				createResponse.applicationId,
 				dockerImage,
 			);
@@ -52,7 +52,7 @@ export const deployPreviewApp = async (req: Request, res: Response) => {
 
 			// Use auto deploy
 
-			return previewAppservice.deployApplication(previewApp.previewAppId, res);
+			return previewAppServices.deployApplication(previewApp.previewAppId, res);
 		} else {
 			res.status(400).json({
 				message: "Failed to create preview app on Dokploy",
@@ -70,7 +70,7 @@ export const deletePreviewApp = async (req: Request, res: Response) => {
 
 	if (previewApp) {
 		await previewAppRepo.remove(previewApp);
-		return await previewAppservice.deletePreviewApp(previewApp.previewAppId, res);
+		return await previewAppServices.deletePreviewApp(previewApp.previewAppId, res);
 	} else {
 		return res.status(404).json({ message: "Preview app not found" });
 	}

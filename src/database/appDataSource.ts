@@ -1,5 +1,6 @@
-import { PreviewApp } from "@src/models/previewApp";
+import "module-alias/register";
 import "reflect-metadata";
+import { PreviewApp } from "src/models/previewApp";
 import { DataSource } from "typeorm";
 
 export const AppDataSource = new DataSource({

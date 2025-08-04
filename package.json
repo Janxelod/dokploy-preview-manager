@@ -1,36 +1,36 @@
 {
-  "name": "dokploy-preview-manager",
-  "version": "1.0.0",
-  "description": "API to create Dokploy previews from merge request using Docker as provider. Uses Node and SQLite.",
-  "main": "index.js",
-  "scripts": {
-    "dev": "tsx watch src/app.ts --verbose",
-    "build": "tsc",
-    "start": "node dist/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Janxelod/dokploy-preview-manager.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "express": "^5.1.0",
-    "reflect-metadata": "^0.2.2",
-    "sqlite3": "^5.1.7",
-    "typeorm": "^0.3.25"
-  },
-  "devDependencies": {
-    "@types/express": "^5.0.3",
-    "@types/node": "^24.1.0",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.20.3",
-    "typescript": "^5.9.2"
-  },
-  "engines": {
-    "npm": ">=11.0.0",
-    "node": "^24.5.0"
-  }
+	"name": "dokploy-preview-manager",
+	"version": "1.0.0",
+	"description": "API to create Dokploy previews from merge request using Docker as provider. Uses Node and SQLite.",
+	"main": "index.js",
+	"scripts": {
+		"dev": "tsx watch src/app.ts --verbose",
+		"build": "tsc",
+		"start": "node dist/app.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Janxelod/dokploy-preview-manager.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "MIT",
+	"dependencies": {
+		"express": "^5.1.0",
+		"reflect-metadata": "^0.2.2",
+		"sqlite3": "^5.1.7",
+		"typeorm": "^0.3.25"
+	},
+	"devDependencies": {
+		"@types/express": "^5.0.3",
+		"@types/node": "^24.1.0",
+		"ts-node": "^10.9.2",
+		"tsx": "^4.20.3",
+		"typescript": "^5.9.2"
+	},
+	"engines": {
+		"npm": ">=11.0.0",
+		"node": "^24.5.0"
+	}
 }

@@ -1,8 +1,7 @@
-import { CreateAPIResponseType } from "@src/types";
 import { Response } from "express";
+import { CreateAPIResponseType } from "src/types";
 
 const deployApplication = async (previewAppId: string, res: Response): Promise<Response | null> => {
-	console.log("Deploying preview app on Dokploy");
 	const deployResponse = await deployApplicationInternal(previewAppId);
 	if (deployResponse && deployResponse.status === 200) {
 		return res.status(200).json({
