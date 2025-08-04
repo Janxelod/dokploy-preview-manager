@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import path from "path";
-import { AppDataSource } from "src/database/appDataSource";
+import { AppDataSource } from "./database/appDataSource";
 import "./extensions"; // Ensure the extensions are loaded
 import previewAppRoutes from "./routes/previewAppRoutes";
 

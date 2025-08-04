@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { CreateAPIResponseType } from "src/types";
+import { CreateAPIResponseType } from "../types";
 
 const deployApplication = async (previewAppId: string, res: Response): Promise<Response | null> => {
 	const deployResponse = await deployApplicationInternal(previewAppId);

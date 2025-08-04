@@ -1,7 +1,7 @@
 import "module-alias/register";
 import "reflect-metadata";
-import { PreviewApp } from "src/models/previewApp";
 import { DataSource } from "typeorm";
+import { PreviewApp } from "../models/previewApp";
 
 export const AppDataSource = new DataSource({
 	type: "sqlite",

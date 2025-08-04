@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { AppDataSource } from "src/database/appDataSource";
-import { PreviewApp } from "src/models/previewApp";
-import previewAppServices from "src/services/previewAppServices";
-import { CreateAPIResponseType } from "src/types";
+import { AppDataSource } from "../database/appDataSource";
+import { PreviewApp } from "../models/previewApp";
+import previewAppServices from "../services/previewAppServices";
+import { CreateAPIResponseType } from "../types";
 
 export const getAllPreviewApps = async (_: Request, res: Response) => {
 	const previewAppRepo = AppDataSource.getRepository(PreviewApp);
