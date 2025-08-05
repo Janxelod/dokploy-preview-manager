@@ -1,8 +1,11 @@
+import path from "path";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { PreviewApp } from "../models/previewApp";
 
-const dbPath = process.env.DB_PATH || "db.sqlite";
+const prodPath = path.resolve("/", "data", "db", "db.sqlite");
+
+const dbPath = process.env.NODE_ENV === "prod" ? prodPath : "db.sqlite";
 
 export const AppDataSource = new DataSource({
 	type: "sqlite",
