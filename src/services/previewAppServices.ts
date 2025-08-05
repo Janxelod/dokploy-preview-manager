@@ -1,11 +1,12 @@
 import { Response } from "express";
 import { CreateAPIResponseType } from "../types";
 
-const deployApplication = async (previewAppId: string, res: Response): Promise<Response | null> => {
+const deployApplication = async (previewAppId: string, domain: string, res: Response): Promise<Response | null> => {
 	const deployResponse = await deployApplicationInternal(previewAppId);
 	if (deployResponse && deployResponse.status === 200) {
 		return res.status(200).json({
 			message: `Preview app deployed`,
+			previewDomain: domain,
 		});
 	} else {
 		return res.status(400).json({
@@ -98,6 +99,20 @@ const deletePreviewApp = async (appId: string, res: Response) => {
 	}
 };
 
+const generateDomain = async (previewAppName: string) => {
+	const response = await fetch(`${process.env.DOKPLOY_API_URL}/domain.generateDomain	`, {
+		headers: getHeaders(),
+		body: JSON.stringify({
+			appName: previewAppName,
+		}),
+		method: "POST",
+	});
+
+	const result = await response.json();
+	console.log("Domain generation response status:", result);
+	return result || "";
+};
+
 const getHeaders = () => {
 	return {
 		"x-api-key": `${process.env.DOKPLOY_API_KEY}`,
@@ -111,4 +126,5 @@ export default {
 	createPreviewApp,
 	setUpDockerProvider,
 	deletePreviewApp,
+	generateDomain,
 };

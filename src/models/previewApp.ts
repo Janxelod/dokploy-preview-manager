@@ -16,4 +16,7 @@ export class PreviewApp {
 
 	@Column({ type: "text" })
 	dockerImage: string;
+
+	@Column({ type: "text" })
+	domain: string;
 }

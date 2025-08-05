@@ -20,7 +20,7 @@ export const deployPreviewApp = async (req: Request, res: Response) => {
 	});
 
 	if (existingPreviewApp) {
-		return await previewAppServices.deployApplication(existingPreviewApp.previewAppId, res);
+		return await previewAppServices.deployApplication(existingPreviewApp.previewAppId, existingPreviewApp.domain, res);
 	} else {
 		// create a new preview app on Dokploy
 		console.log("Creating new preview app on Dokploy");
@@ -40,19 +40,18 @@ export const deployPreviewApp = async (req: Request, res: Response) => {
 				dockerImage,
 			);
 
-			console.log("Docker provider setup response:", dockerSetupResponse);
-			console.log("Saving preview app to database", createResponse);
+			const domain = await previewAppServices.generateDomain(previewAppName);
+
 			const previewApp = previewAppRepo.create({
 				projectName: previewAppName,
 				sourceAppId,
 				previewAppId: createResponse.applicationId,
 				dockerImage,
+				domain,
 			});
 			await previewAppRepo.save(previewApp);
-
 			// Use auto deploy
-
-			return previewAppServices.deployApplication(previewApp.previewAppId, res);
+			return previewAppServices.deployApplication(previewApp.previewAppId, domain, res);
 		} else {
 			res.status(400).json({
 				message: "Failed to create preview app on Dokploy",
