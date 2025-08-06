@@ -35,23 +35,28 @@ export const deployPreviewApp = async (req: Request, res: Response) => {
 		if (createResponse) {
 			// Set up the Docker provider for the preview app
 			const dockerImage = `${process.env.DOCKER_REGISTRY_URL}/${sourceProjectName}/${serviceName}/${branchName}:latest`;
-			const dockerSetupResponse = await previewAppServices.setUpDockerProvider(
-				createResponse.applicationId,
-				dockerImage,
-			);
+
+			await previewAppServices.setUpDockerProvider(createResponse.applicationId, dockerImage);
 
 			const domain = await previewAppServices.generateDomain(previewAppName);
 
-			const previewApp = previewAppRepo.create({
-				projectName: previewAppName,
-				sourceAppId,
-				previewAppId: createResponse.applicationId,
-				dockerImage,
-				domain,
-			});
-			await previewAppRepo.save(previewApp);
-			// Use auto deploy
-			return previewAppServices.deployApplication(previewApp.previewAppId, domain, res);
+			if (domain !== "") {
+				await previewAppServices.attachDomain(createResponse.applicationId, domain);
+				const previewApp = previewAppRepo.create({
+					projectName: previewAppName,
+					sourceAppId,
+					previewAppId: createResponse.applicationId,
+					dockerImage,
+					domain,
+				});
+				await previewAppRepo.save(previewApp);
+				// Use auto deploy
+				return previewAppServices.deployApplication(previewApp.previewAppId, domain, res);
+			} else {
+				return res.status(400).json({
+					message: "Deployment failed: Unable to generate domain for the preview app",
+				});
+			}
 		} else {
 			res.status(400).json({
 				message: "Failed to create preview app on Dokploy",

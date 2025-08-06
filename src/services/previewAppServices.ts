@@ -109,7 +109,24 @@ const generateDomain = async (previewAppName: string) => {
 	});
 
 	const result = await response.json();
-	console.log("Domain generation response status:", result);
+	return result || "";
+};
+
+const attachDomain = async (previewAppId: string, domain: string) => {
+	const response = await fetch(`${process.env.DOKPLOY_API_URL}/domain.create	`, {
+		headers: getHeaders(),
+		body: JSON.stringify({
+			applicationId: previewAppId,
+			host: domain,
+			domaintType: "application",
+			https: false,
+			stripPath: false,
+			domainId: "",
+		}),
+		method: "POST",
+	});
+	const result = await response.json();
+	console.log("Domain creation response status:", result);
 	return result || "";
 };
 
@@ -127,4 +144,5 @@ export default {
 	setUpDockerProvider,
 	deletePreviewApp,
 	generateDomain,
+	attachDomain,
 };
