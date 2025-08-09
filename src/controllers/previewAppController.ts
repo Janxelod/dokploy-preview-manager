@@ -20,7 +20,7 @@ export const deployPreviewApp = async (req: Request, res: Response) => {
 	});
 
 	if (existingPreviewApp) {
-		return await previewAppServices.deployApplication(existingPreviewApp.previewAppId, existingPreviewApp.domain, res);
+		return await previewAppServices.deployApplication(existingPreviewApp, res);
 	} else {
 		// create a new preview app on Dokploy
 		console.log("Creating new preview app on Dokploy");
@@ -51,7 +51,7 @@ export const deployPreviewApp = async (req: Request, res: Response) => {
 				});
 				await previewAppRepo.save(previewApp);
 				// Use auto deploy
-				return previewAppServices.deployApplication(previewApp.previewAppId, domain, res);
+				return previewAppServices.deployApplication(previewApp, res);
 			} else {
 				return res.status(400).json({
 					message: "Deployment failed: Unable to generate domain for the preview app",

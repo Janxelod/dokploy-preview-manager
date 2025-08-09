@@ -1,12 +1,14 @@
 import { Response } from "express";
+import { PreviewApp } from "../models/previewApp";
 import { CreateAPIResponseType } from "../types";
 
-const deployApplication = async (previewAppId: string, domain: string, res: Response): Promise<Response | null> => {
-	const deployResponse = await deployApplicationInternal(previewAppId);
+const deployApplication = async (previewApp: PreviewApp, res: Response): Promise<Response | null> => {
+	await copyEnvVars(previewApp.sourceAppId, previewApp.previewAppId);
+	const deployResponse = await deployApplicationInternal(previewApp.previewAppId);
 	if (deployResponse && deployResponse.status === 200) {
 		return res.status(200).json({
 			message: `Preview app deployed`,
-			previewDomain: domain,
+			previewDomain: previewApp.domain,
 		});
 	} else {
 		return res.status(400).json({
@@ -15,12 +17,12 @@ const deployApplication = async (previewAppId: string, domain: string, res: Resp
 	}
 };
 
-const deployApplicationInternal = async (sourceAppId: string) => {
+const deployApplicationInternal = async (appId: string) => {
 	try {
 		const response = await fetch(`${process.env.DOKPLOY_API_URL}/application.deploy`, {
 			headers: getHeaders(),
 			body: JSON.stringify({
-				applicationId: sourceAppId,
+				applicationId: appId,
 			}),
 			method: "POST",
 		});
@@ -128,6 +130,35 @@ const attachDomain = async (previewAppId: string, domain: string) => {
 	const result = await response.json();
 	console.log("Domain creation response status:", result);
 	return result || "";
+};
+
+const copyEnvVars = async (sourceAppId: string, previewAppId: string) => {
+	const responseApplicationOne = await fetch(`${process.env.DOKPLOY_API_URL}/application.one`, {
+		headers: getHeaders(),
+		body: JSON.stringify({
+			applicationId: sourceAppId,
+		}),
+		method: "GET",
+	});
+
+	const result = await responseApplicationOne.json();
+	const sourceEnv = result.env;
+
+	const response = await fetch(`${process.env.DOKPLOY_API_URL}/application.saveEnvironment`, {
+		headers: getHeaders(),
+		body: JSON.stringify({
+			applicationId: previewAppId,
+			env: sourceEnv,
+			buildArgs: "",
+		}),
+		method: "POST",
+	});
+
+	const finalResult = await response.json();
+
+	if (finalResult.status !== 200) {
+		console.error("Error copying environment variables:", finalResult);
+	}
 };
 
 const getHeaders = () => {
