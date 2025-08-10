@@ -133,13 +133,13 @@ const attachDomain = async (previewAppId: string, domain: string) => {
 };
 
 const copyEnvVars = async (sourceAppId: string, previewAppId: string) => {
-	const responseApplicationOne = await fetch(`${process.env.DOKPLOY_API_URL}/application.one`, {
-		headers: getHeaders(),
-		body: JSON.stringify({
-			applicationId: sourceAppId,
-		}),
-		method: "GET",
-	});
+	const responseApplicationOne = await fetch(
+		`${process.env.DOKPLOY_API_URL}/application.one?applicationId=${sourceAppId}`,
+		{
+			headers: getHeaders(),
+			method: "GET",
+		},
+	);
 
 	const result = await responseApplicationOne.json();
 	const sourceEnv = result.env;

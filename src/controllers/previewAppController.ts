@@ -68,8 +68,8 @@ export const deployPreviewApp = async (req: Request, res: Response) => {
 export const deletePreviewApp = async (req: Request, res: Response) => {
 	const { previewAppId } = req.body;
 	const previewAppRepo = AppDataSource.getRepository(PreviewApp);
-	const previewApp = await previewAppRepo.findOneBy({
-		previewAppId,
+	const previewApp = await previewAppRepo.findOne({
+		where: { previewAppId },
 	});
 
 	if (previewApp) {
