@@ -102,16 +102,7 @@ const deletePreviewApp = async (appId: string, res: Response) => {
 };
 
 const generateDomain = async (previewAppName: string) => {
-	const response = await fetch(`${process.env.DOKPLOY_API_URL}/domain.generateDomain	`, {
-		headers: getHeaders(),
-		body: JSON.stringify({
-			appName: previewAppName,
-		}),
-		method: "POST",
-	});
-
-	const result = await response.json();
-	return result || "";
+	return `${previewAppName}.${process.env.PREVIEW_DOMAIN_SUFFIX}`;
 };
 
 const attachDomain = async (previewAppId: string, domain: string) => {
@@ -121,8 +112,9 @@ const attachDomain = async (previewAppId: string, domain: string) => {
 			applicationId: previewAppId,
 			host: domain,
 			domaintType: "application",
-			https: false,
+			https: true,
 			stripPath: false,
+			certificateType: "letsencrypt",
 			domainId: "",
 		}),
 		method: "POST",
