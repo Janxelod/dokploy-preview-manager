@@ -17,13 +17,17 @@
 	"author": "",
 	"license": "MIT",
 	"dependencies": {
+		"bcrypt": "^6.0.0",
 		"express": "^5.1.0",
+		"jsonwebtoken": "^9.0.2",
 		"reflect-metadata": "^0.2.2",
 		"sqlite3": "^5.1.7",
 		"typeorm": "^0.3.25"
 	},
 	"devDependencies": {
+		"@types/bcrypt": "^6.0.0",
 		"@types/express": "^5.0.3",
+		"@types/jsonwebtoken": "^9.0.10",
 		"@types/node": "^24.1.0",
 		"ts-node": "^10.9.2",
 		"tsx": "^4.20.3",
