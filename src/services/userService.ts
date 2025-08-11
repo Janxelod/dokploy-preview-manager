@@ -11,6 +11,10 @@ class UserService {
 	}
 
 	public async createUser(createUserDto: CreateUserDto) {
+		const existingUser = await this.findUser(createUserDto.userName);
+		if (existingUser) {
+			throw new Error("User already exists");
+		}
 		const hashedPassword = await passwordService.hash(createUserDto.password);
 
 		const user = this.userRepository.create({

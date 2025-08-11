@@ -7,7 +7,8 @@
 		"dev": "tsx watch src/app.ts --verbose",
 		"build": "tsc",
 		"start": "node dist/app.js",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"create-user": "tsx src/generateUser.ts"
 	},
 	"repository": {
 		"type": "git",

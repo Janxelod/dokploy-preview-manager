@@ -13,9 +13,8 @@ dotenv.config({ path: path.resolve(envFilePath) });
 const app = express();
 const PORT = 3000;
 
-app.use(authMiddleware);
 app.use(express.json());
-app.use("/api", previewAppRoutes);
+app.use("/api", authMiddleware, previewAppRoutes);
 app.use("/auth", authRoutes);
 
 AppDataSource.initialize()

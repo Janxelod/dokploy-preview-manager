@@ -1,14 +1,13 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { User } from "../models/user";
 
-const secret = process.env.JWT_SECRET;
-
 class JWTService {
 	constructor() {
 		console.log("JWTService initialized");
 	}
 
 	public generateToken(user: User): string {
+		const secret = process.env.JWT_SECRET;
 		if (!secret) {
 			throw new Error("JWT secret is not defined");
 		}
@@ -18,6 +17,7 @@ class JWTService {
 	}
 
 	public verifyToken(token: string, callBack: (err: jwt.VerifyErrors | null, decoded: JwtPayload | undefined) => void) {
+		const secret = process.env.JWT_SECRET;
 		if (!secret) {
 			throw new Error("JWT secret is not defined");
 		}
