@@ -8,7 +8,7 @@ const deployApplication = async (
 	res: Response,
 	options?: DeployPreviewAppOptions,
 ): Promise<Response | null> => {
-	await copyEnvVars(previewApp.sourceAppId, previewApp.previewAppId);
+	await copyEnvVars(previewApp.sourceAppId, previewApp.previewAppId, options);
 	const deployResponse = await deployApplicationInternal(previewApp.previewAppId);
 	if (deployResponse && deployResponse.status === 200) {
 		return res.status(200).json({
