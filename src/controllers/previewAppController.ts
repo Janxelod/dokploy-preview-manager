@@ -86,9 +86,15 @@ export const replaceEnvVar = async (req: Request, res: Response) => {
 	const result = await previewAppServices.copyEnvVars(sourceAppId, previewAppId, {
 		replaceEnvVar: { key, newValue },
 	});
-
+	let reloadResult = false;
 	if (result) {
-		return res.status(200).json({ message: "Environment variables replaced successfully" });
+		reloadResult = await previewAppServices.reloadApp(previewAppId);
+	}
+
+	if (reloadResult) {
+		return res
+			.status(200)
+			.json({ message: "Environment variables replaced successfully, Application reloaded successfully" });
 	} else {
 		return res.status(400).json({ message: "Failed to replace environment variables" });
 	}

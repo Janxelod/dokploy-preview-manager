@@ -172,6 +172,24 @@ const copyEnvVars = async (
 	return true;
 };
 
+const reloadApp = async (appId: string) => {
+	const response = await fetch(`${process.env.DOKPLOY_API_URL}/application.reload`, {
+		headers: getHeaders(),
+		body: JSON.stringify({
+			appName: "",
+			applicationId: appId,
+		}),
+		method: "POST",
+	});
+	const finalResult = await response.json();
+
+	if (finalResult.status !== 200) {
+		console.error("Error reloading application:", finalResult);
+		return false;
+	}
+	return true;
+};
+
 const getHeaders = () => {
 	return {
 		"x-api-key": `${process.env.DOKPLOY_API_KEY}`,
@@ -188,4 +206,5 @@ export default {
 	generateDomain,
 	attachDomain,
 	copyEnvVars,
+	reloadApp,
 };
