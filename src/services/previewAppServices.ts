@@ -1,8 +1,13 @@
 import { Response } from "express";
+import { DeployPreviewAppOptions } from "../extensions";
 import { PreviewApp } from "../models/previewApp";
 import { CreateAPIResponseType } from "../types";
 
-const deployApplication = async (previewApp: PreviewApp, res: Response): Promise<Response | null> => {
+const deployApplication = async (
+	previewApp: PreviewApp,
+	res: Response,
+	options?: DeployPreviewAppOptions,
+): Promise<Response | null> => {
 	await copyEnvVars(previewApp.sourceAppId, previewApp.previewAppId);
 	const deployResponse = await deployApplicationInternal(previewApp.previewAppId);
 	if (deployResponse && deployResponse.status === 200) {
@@ -124,7 +129,11 @@ const attachDomain = async (previewAppId: string, domain: string) => {
 	return result || "";
 };
 
-const copyEnvVars = async (sourceAppId: string, previewAppId: string) => {
+const copyEnvVars = async (
+	sourceAppId: string,
+	previewAppId: string,
+	options?: DeployPreviewAppOptions,
+): Promise<boolean> => {
 	const responseApplicationOne = await fetch(
 		`${process.env.DOKPLOY_API_URL}/application.one?applicationId=${sourceAppId}`,
 		{
@@ -134,7 +143,15 @@ const copyEnvVars = async (sourceAppId: string, previewAppId: string) => {
 	);
 
 	const result = await responseApplicationOne.json();
-	const sourceEnv = result.env;
+	let sourceEnv = result.env as string;
+
+	if (options) {
+		if (options.replaceEnvVar) {
+			const { key, newValue } = options.replaceEnvVar;
+			const regex = new RegExp(`^${key}=[^\\s]+\\n?`, "m");
+			sourceEnv = sourceEnv.replace(regex, `${key}=${newValue}\n`);
+		}
+	}
 
 	const response = await fetch(`${process.env.DOKPLOY_API_URL}/application.saveEnvironment`, {
 		headers: getHeaders(),
@@ -150,7 +167,9 @@ const copyEnvVars = async (sourceAppId: string, previewAppId: string) => {
 
 	if (finalResult.status !== 200) {
 		console.error("Error copying environment variables:", finalResult);
+		return false;
 	}
+	return true;
 };
 
 const getHeaders = () => {
@@ -168,4 +187,5 @@ export default {
 	deletePreviewApp,
 	generateDomain,
 	attachDomain,
+	copyEnvVars,
 };

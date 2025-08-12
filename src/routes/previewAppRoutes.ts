@@ -1,10 +1,16 @@
 import { Router } from "express";
-import { deletePreviewApp, deployPreviewApp, getAllPreviewApps } from "../controllers/previewAppController";
+import {
+	deletePreviewApp,
+	deployPreviewApp,
+	getAllPreviewApps,
+	replaceEnvVar,
+} from "../controllers/previewAppController";
 
 const router = Router();
 
 router.post("/deploy-preview-app", deployPreviewApp);
 router.get("/preview-apps", getAllPreviewApps);
+router.post("/replace-env-var", replaceEnvVar);
 router.delete("/preview-apps", deletePreviewApp);
 
 export default router;

@@ -11,7 +11,7 @@ export const getAllPreviewApps = async (_: Request, res: Response) => {
 };
 
 export const deployPreviewApp = async (req: Request, res: Response) => {
-	const { sourceProjectName, serviceName, branchName, sourceAppId, projectId } = req.body;
+	const { sourceProjectName, serviceName, branchName, sourceAppId, projectId, options } = req.body;
 	const previewAppRepo = AppDataSource.getRepository(PreviewApp);
 
 	// Search if a preview App with the name branchName-preview already exists
@@ -20,7 +20,7 @@ export const deployPreviewApp = async (req: Request, res: Response) => {
 	});
 
 	if (existingPreviewApp) {
-		return await previewAppServices.deployApplication(existingPreviewApp, res);
+		return await previewAppServices.deployApplication(existingPreviewApp, res, options);
 	} else {
 		// create a new preview app on Dokploy
 		console.log("Creating new preview app on Dokploy");
@@ -51,7 +51,7 @@ export const deployPreviewApp = async (req: Request, res: Response) => {
 				});
 				await previewAppRepo.save(previewApp);
 				// Use auto deploy
-				return previewAppServices.deployApplication(previewApp, res);
+				return previewAppServices.deployApplication(previewApp, res, options);
 			} else {
 				return res.status(400).json({
 					message: "Deployment failed: Unable to generate domain for the preview app",
@@ -77,5 +77,19 @@ export const deletePreviewApp = async (req: Request, res: Response) => {
 		return await previewAppServices.deletePreviewApp(previewApp.previewAppId, res);
 	} else {
 		return res.status(404).json({ message: "Preview app not found" });
+	}
+};
+
+export const replaceEnvVar = async (req: Request, res: Response) => {
+	const { sourceAppId, previewAppId, key, newValue } = req.body;
+
+	const result = await previewAppServices.copyEnvVars(sourceAppId, previewAppId, {
+		replaceEnvVar: { key, newValue },
+	});
+
+	if (result) {
+		return res.status(200).json({ message: "Environment variables replaced successfully" });
+	} else {
+		return res.status(400).json({ message: "Failed to replace environment variables" });
 	}
 };
