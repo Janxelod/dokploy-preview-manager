@@ -65,15 +65,27 @@ const createPreviewApp = async (
 	}
 };
 
-const setUpDockerProvider = async (appId: string, dockerImage: string) => {
+const setUpDockerProvider = async (appId: string, dockerImage: string, sourceAppId: string) => {
 	try {
+		const responseApplicationOne = await fetch(
+			`${process.env.DOKPLOY_API_URL}/application.one?applicationId=${sourceAppId}`,
+			{
+				headers: getHeaders(),
+				method: "GET",
+			},
+		);
+
+		const result = await responseApplicationOne.json();
+		const dockerProviderUsername = result.username as string;
+		const dockerProviderPassword = result.password as string;
+
 		const response = await fetch(`${process.env.DOKPLOY_API_URL}/application.saveDockerProvider`, {
 			headers: getHeaders(),
 			body: JSON.stringify({
 				applicationId: appId,
 				dockerImage: dockerImage,
-				password: process.env.DOCKER_PROVIDER_PASSWORD,
-				username: process.env.DOCKER_PROVIDER_USERNAME,
+				password: dockerProviderPassword ?? process.env.DOCKER_PROVIDER_PASSWORD,
+				username: dockerProviderUsername ?? process.env.DOCKER_PROVIDER_USERNAME,
 				registryUrl: process.env.DOCKER_REGISTRY_URL,
 			}),
 			method: "POST",

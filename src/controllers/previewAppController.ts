@@ -36,7 +36,7 @@ export const deployPreviewApp = async (req: Request, res: Response) => {
 			// Set up the Docker provider for the preview app
 			const dockerImage = `${process.env.DOCKER_REGISTRY_URL}/${sourceProjectName}/${serviceName}/${branchName}:latest`;
 
-			await previewAppServices.setUpDockerProvider(createResponse.applicationId, dockerImage);
+			await previewAppServices.setUpDockerProvider(createResponse.applicationId, dockerImage, sourceAppId);
 
 			const domain = await previewAppServices.generateDomain(`${sourceProjectName}-${serviceName}-${branchName}`);
 
