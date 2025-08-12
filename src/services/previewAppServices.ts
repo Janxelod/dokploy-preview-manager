@@ -165,7 +165,7 @@ const copyEnvVars = async (
 
 	const finalResult = await response.json();
 
-	if (finalResult.status !== 200) {
+	if (response.status !== 200) {
 		console.error("Error copying environment variables:", finalResult);
 		return false;
 	}
@@ -183,7 +183,7 @@ const reloadApp = async (appId: string) => {
 	});
 	const finalResult = await response.json();
 
-	if (finalResult.status !== 200) {
+	if (response.status !== 200) {
 		console.error("Error reloading application:", finalResult);
 		return false;
 	}
