@@ -14,6 +14,7 @@ const deployApplication = async (
 		return res.status(200).json({
 			message: `Preview app deployed`,
 			previewDomain: previewApp.domain,
+			previewAppId: previewApp.previewAppId,
 		});
 	} else {
 		return res.status(400).json({
