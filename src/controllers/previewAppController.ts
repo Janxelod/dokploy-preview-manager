@@ -3,6 +3,7 @@ import { AppDataSource } from "../database/appDataSource";
 import { PreviewApp } from "../models/previewApp";
 import previewAppServices from "../services/previewAppServices";
 import { CreateAPIResponseType } from "../types";
+import { CleanString } from "../utils";
 
 export const getAllPreviewApps = async (_: Request, res: Response) => {
 	const previewAppRepo = AppDataSource.getRepository(PreviewApp);
@@ -11,7 +12,10 @@ export const getAllPreviewApps = async (_: Request, res: Response) => {
 };
 
 export const deployPreviewApp = async (req: Request, res: Response) => {
-	const { sourceProjectName, serviceName, branchName, sourceAppId, projectId, options } = req.body;
+	let { sourceProjectName, serviceName, branchName, sourceAppId, projectId, options } = req.body;
+	sourceProjectName = CleanString(sourceProjectName);
+	serviceName = CleanString(serviceName);
+	branchName = CleanString(branchName);
 	const previewAppRepo = AppDataSource.getRepository(PreviewApp);
 
 	// Search if a preview App with the name branchName-preview already exists
